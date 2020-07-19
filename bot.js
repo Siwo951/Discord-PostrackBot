@@ -7,7 +7,15 @@ const token = require("./config.js")["token"];
 const client = new Discord.Client();
 
 client.on("ready", () => {
-  console.log("Ready");
+  console.log("--------------------");
+  console.log(`${client.user.username}の起動に成功しました`);
+  console.log("--------------------");
+  console.log(`コマンド: ${prefix}`);
+  console.log(`トークン: ${token.slice(0,5)}...`);
+  console.log("(トークンは安全上先頭から5文字のみを表示しています)");
+  console.log("--------------------");
+  console.log("終了は Ctrl+C を押して下さい");
+  console.log("--------------------");
 });
 
 client.on("message", async message => {

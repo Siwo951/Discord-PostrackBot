@@ -10,7 +10,7 @@ client.on("ready", () => {
   console.log("--------------------");
   console.log(`${client.user.username}の起動に成功しました`);
   console.log("--------------------");
-  console.log(`コマンド: ${prefix}`);
+  console.log(`コマンド: ${command} (追跡番号)`);
   console.log(`トークン: ${token.slice(0,5)}...`);
   console.log("(トークンは安全上先頭から5文字のみを表示しています)");
   console.log("--------------------");

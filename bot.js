@@ -11,7 +11,7 @@ client.on("ready", () => {
   console.log("--------------------");
   console.log(`${client.user.username}の起動に成功しました`);
   console.log("--------------------");
-  console.log(`コマンド: ${command} [追跡番号] (オプション)`);
+  console.log(`コマンド: ${command} [追跡番号]`);
   console.log(`トークン: ${token.slice(0,5)}...`);
   console.log("(トークンは安全上先頭から5文字のみを表示しています)");
   console.log("--------------------");
@@ -61,43 +61,6 @@ client.on("message", async message => {
           rp.get(`https://trackings.post.japanpost.jp/services/srv/search/?requestNo1=${tracknumber}&search=%E8%BF%BD%E8%B7%A1%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%88`, options)
           .then(($2) => {
             var packtype = $2(".w_480").text().replace("商品種別","");
-            if (message.content.match(/delete/) && message.content.match(/link/)) {
-              message.delete();
-              message.author.send({
-                  embed: {
-                    author: {
-                      name: "日本郵便 - 追跡",
-                      icon_url: "https://www.post.japanpost.jp/img/common/touch-icon.png"
-                    },
-                    color: `0x7289da`,
-                    title: `${tracknumber} の追跡ページ`,
-                    url: `https://trackings.post.japanpost.jp/services/srv/search/?requestNo1=${tracknumber}&search=%E8%BF%BD%E8%B7%A1%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%88`,
-                    description: `DM送信時の荷物の状況: ${trackresult}`,
-                    timestamp: new Date(),
-                  }
-                });
-              var post_option = {name: "オプション実行", value: "DMに追跡ページのリンクを送信しました\n追跡番号のコマンドを削除しました"};
-            }
-            else if (message.content.match(/link/)) {
-              message.author.send({
-                embed: {
-                  author: {
-                    name: "日本郵便 - 追跡",
-                    icon_url: "https://www.post.japanpost.jp/img/common/touch-icon.png"
-                  },
-                  color: `0x7289da`,
-                  title: `${tracknumber} の追跡ページ`,
-                  url: `https://trackings.post.japanpost.jp/services/srv/search/?requestNo1=${tracknumber}&search=%E8%BF%BD%E8%B7%A1%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%88`,
-                  description: `DM送信時の荷物の状況: ${trackresult}`,
-                  timestamp: new Date(),
-                }
-              });
-              var post_option = {name: "オプション実行", value: "DMに追跡ページのリンクを送信しました"};
-            }
-            else if (message.content.match(/delete/)) {
-              message.delete();
-              var post_option = {name: "オプション実行", value: "追跡番号のコマンドを削除しました"};
-            }
             message.channel.send({
               embed: {
                 author: {

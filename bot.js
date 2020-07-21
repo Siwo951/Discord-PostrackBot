@@ -68,7 +68,6 @@ client.on("message", async message => {
                   icon_url: "https://www.post.japanpost.jp/img/common/touch-icon.png"
                 },
                 color: `0x7289da`,
-                fields: post_option,
                 title: `荷物の状況: ${trackresult}`,
                 description: `荷物種別: ${packtype}`,
                 timestamp: new Date(),

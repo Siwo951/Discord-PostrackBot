@@ -7,7 +7,7 @@ const token = require("./config.js")["token"];
 const client = new Discord.Client();
 
 client.on("ready", () => {
-  client.user.setActivity(`use: ${command} [Trackingcode] (Option)`);
+  client.user.setActivity(`use: ${command} [Trackingcode]`);
   console.log("--------------------");
   console.log(`${client.user.username}の起動に成功しました`);
   console.log("--------------------");

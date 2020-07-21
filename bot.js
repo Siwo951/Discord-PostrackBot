@@ -9,11 +9,10 @@ const client = new Discord.Client();
 client.on("ready", () => {
   client.user.setActivity(`use: ${command} [Trackingcode]`);
   console.log("--------------------");
-  console.log(`${client.user.username}の起動に成功しました`);
+  console.log("Discord-PostrackBot by Siwo951");
   console.log("--------------------");
+  console.log(`「${client.user.username}」の起動に成功しました`);
   console.log(`コマンド: ${command} [追跡番号]`);
-  console.log(`トークン: ${token.slice(0,5)}...`);
-  console.log("(トークンは安全上先頭から5文字のみを表示しています)");
   console.log("--------------------");
   console.log("終了は Ctrl+C を押して下さい");
   console.log("--------------------");
@@ -31,6 +30,10 @@ client.on("message", async message => {
           },
           color: `0xff0000`,
           title: "追跡番号を入力して下さい",
+          footer: {
+            icon_url: "https://github.com/fluidicon.png",
+            text: `Discord-PostrackBot by Siwo951`,
+          },
           timestamp: new Date(),
         }
       });
@@ -53,6 +56,10 @@ client.on("message", async message => {
               },
               color: `0xff0000`,
               title: `追跡番号に誤りが有ります`,
+              footer: {
+                icon_url: "https://github.com/fluidicon.png",
+                text: `Discord-PostrackBot by Siwo951`,
+              },
               timestamp: new Date(),
             }
           });
@@ -70,6 +77,10 @@ client.on("message", async message => {
                 color: `0x7289da`,
                 title: `荷物の状況: ${trackresult}`,
                 description: `荷物種別: ${packtype}`,
+                footer: {
+                  icon_url: "https://github.com/fluidicon.png",
+                  text: `Discord-PostrackBot by Siwo951`,
+                },
                 timestamp: new Date(),
               }
             });

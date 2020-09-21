@@ -1,3 +1,5 @@
+## このモジュールは後日更新予定です
+
 # Discord-PostrackBot
 日本郵便の荷物追跡結果を表示するDiscordBot  
 動作にはNode.js(v12以降)とその他モジュールが必要です  

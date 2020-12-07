@@ -43,7 +43,7 @@ client.on("ready", () => {
 client.on("message", async message => {
   if (message.author.bot) return;
   if (message.content.startsWith(command)) {
-    var trackCode = message.content.replace(`${command}`,"").replace(/ /g,"");
+    var trackCode = message.content.replace(`${command}`,"").replace(/\s+/g,"");
     fetch(`https://trackings.post.japanpost.jp/services/srv/search/?requestNo1=${trackCode}&search=%E8%BF%BD%E8%B7%A1%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%88`)
     .then(res => res.text())
     .then(body => {
@@ -66,8 +66,8 @@ client.on("message", async message => {
           japanpostType = `${$("table.tableType01:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text()}\n(海外での履歴は現地時間)`;
           $("table.tableType01:nth-child(5) > tbody:nth-child(1) > tr > td:nth-child(5)").each((i, elem) => {japanPostPlaceName[i] = $(elem).text()});
           for (let i = 0; i < japanpostInfo.length; i++) {
-            if (japanPostPlaceName[i].replace(/ /g,"").replace(/[A-Z]/g,"") == "") {
-              japanpostSet.push({name: `${japanpostDate[i].slice(5)} (${japanPostPlaceName[i].replace(/ /g,"")})`, value: `${japanpostInfo[i]}`});
+            if (japanPostPlaceName[i].replace(/\s+/g,"").replace(/[A-Z]/g,"") == "") {
+              japanpostSet.push({name: `${japanpostDate[i].slice(5)} (${japanPostPlaceName[i].replace(/\s+/g,"")})`, value: `${japanpostInfo[i]}`});
             }
             else {
               japanpostSet.push({name: `${japanpostDate[i].slice(5)} (JAPAN)`, value: `${japanpostInfo[i]}`});

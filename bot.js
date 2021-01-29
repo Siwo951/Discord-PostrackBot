@@ -40,7 +40,7 @@ client.on("ready", () => {
 
 // ------------------------- //
 
-client.on("message", async message => {
+client.on("message", message => {
   if (message.author.bot) return;
   if (message.content.startsWith(command)) {
     var trackCode = message.content.replace(`${command}`,"").replace(/\s+/g,"");

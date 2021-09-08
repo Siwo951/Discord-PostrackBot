@@ -1,13 +1,9 @@
-**今後discord.jsのv13がリリースされる予定です**  
-**v13ではコードの仕様が違う為このBotが動きません**  
-**その場合には恐れ入りますが対応をお待ち頂きます様お願い致します**  
-
 # Discord-PostrackBot
 日本郵便の荷物追跡結果を表示するDiscordBot  
-動作にはNode.js(v12以降)とその他モジュールが必要です  
+動作にはNode.js(v12.0.0以降)とその他モジュールが必要です  
 
 ## 必須モジュール
-discord.js (v12)  
+discord.js v12.5.3 (v13以降では動きません)  
 cheerio   
 node-fetch  
   

@@ -1,22 +1,18 @@
-**今後discord.jsのv13がリリースされる予定です**  
-**v13ではコードの仕様が違う為このBotが動きません**  
-**その場合には恐れ入りますが対応をお待ち頂きます様お願い致します**  
-
 # Discord-PostrackBot
 日本郵便の荷物追跡結果を表示するDiscordBot  
-動作にはNode.js(v12以降)とその他モジュールが必要です  
+動作には[Node.js](https://nodejs.org)(v16.6.0以降)とその他モジュールが必要です  
 
 ## 必須モジュール
-discord.js (v12)  
-cheerio   
-node-fetch  
+[discord.js](https://www.npmjs.com/package/discord.js) v13.1.0 以降  
+[cheerio](https://www.npmjs.com/package/cheerio)  
+[node-fetch](https://www.npmjs.com/package/node-fetch)  
   
-フォルダ内でコマンドプロンプト等を開き
-`npm install`と入力する事でモジュールを全てインストール出来ます  
+フォルダ内でコマンドプロンプト等を開き  
+`npm install` と入力する事でモジュールを全てインストール出来ます  
 
 ## 使用の前に
 ファイルに同梱されている**config.js**を開いてコマンドとトークンを入力して下さい  
-    
+  
 その後**bot.js**のあるフォルダでコマンドプロンプトを開き  
 `node bot.js`と入力すると起動できます  
 少し待ってからコマンドプロンプトに「起動しました」と表示されれば準備は完了です  
@@ -24,7 +20,7 @@ node-fetch
 ## Discordでの使い方
 先ほどの**config.js**に入力したコマンドの後に追跡番号を入力すると結果が表示されます  
 追跡番号を入力してから表示までは数秒かかります (下記の注意点も参照)  
-設定でEmbed表示を無効にしているとメッセージが表示されませんのでご注意下さい  
+設定でEmbed(埋め込み)表示を無効にしているとメッセージが表示されませんのでご注意下さい  
 
 ## 注意点
 追跡結果の取得はスクレイピングで行っています  

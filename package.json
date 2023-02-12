@@ -9,7 +9,8 @@
   "author": "Siwo951",
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.10",
-    "discord.js": "^13.6.0"
+    "cheerio": "^1.0.0-rc.12",
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3"
   }
 }

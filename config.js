@@ -1,11 +1,15 @@
 module.exports = {
 
-  // botを使用する際のコマンド (コマンドの後に追跡番号を入力する形になります)
-  // "command": "track" の場合: track 123456789012
-  "command": "",
+  // Botを使用する際のコマンド (コマンドの後に追跡番号を入力する形になります)
+  // "track" の場合: track 123456789012
+  command: "track",
 
-  // Discord Developer Portal (https://discord.com/developers/) で発行したbotのトークン
-  // トークンを漏洩させると乗っ取りの原因になる為管理には注意してください
-  "token": ""
+  // BotのメッセージEmbedの色
+  // 0xの後に16進数(HEX)で入力してください
+  embedColor: 0x202020,
+
+  // BotのメッセージEmbedの色 - エラー時
+  // 0xの後に16進数(HEX)で入力してください
+  embedErrorColor: 0xff0000
 
 }

@@ -1,8 +1,9 @@
 require("dotenv").config();
 
 const config = require("./config");
+const resultCachies = {}
 
-if (Object.values(config).map(it => ["", undefined].includes(it)).includes(true)) {
+if (!Object.values(config).every(it => it || false)) {
   console.log("--------------------\nconfigに不備があります\n--------------------");
   process.exit(1);
 }
@@ -32,84 +33,91 @@ client.on("messageCreate", async message => {
 
   message.reply({
     embeds: [{
-      author: {
-        name: "Loading..."
-      },
       color: config.embedColor,
-      title: "荷物の状況: 読み込み中...",
-      timestamp: new Date()
+      description: "取得中です...",
+      timestamp: new Date(),
+      title: "荷物追跡"
     }]
   }).then(msg => {
-    const trackCode = message.content.replace(`${config.command}`, "").replace(/\s+/g,"");
+    const trackCode = message.content.toLowerCase().replace(config.command, "").replace(/[^0-9A-Za-z]/g, "");
 
-    fetch(`https://trackings.post.japanpost.jp/services/srv/search/?requestNo1=${trackCode}&search=%E8%BF%BD%E8%B7%A1%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%88`)
-    .then(res => res.text()).then(body => {
+    const cache = resultCachies[trackCode];
+    const nowTimeStamp = new Date().getTime();
+
+    const trackMessage = (body, fromCache) => {
       const $ = cheerio.load(body);
 
-      if ($(".txt_l > font:nth-child(1)").text() != "") {
+      let latestStatus = null;
+
+      const isInternationalMail = $(".ttl_line").text().indexOf("国際") != -1;
+
+      const embedFields = $(`table[summary="履歴情報"] > tbody > tr`).toArray().map((elem, i) => {
+        if (i % 2 != 0 || $(elem).find("th").length != 0) return null;
+        
+        const history = $(elem).find("td").toArray().map(elem => $(elem).text());
+        const place = isInternationalMail ? (history[4]?.trim()?.replace(/[^A-Z]/g, "") || "JAPAN") : null;
+
+        latestStatus = history[1];
+    
+        return {
+          name: [
+            history[0].replace(/\d{4}\/(\d{2})\/(\d{2})(\s\d{2}:\d{2}|)/, "$1/$2$3"),
+            place != null ? `\`${place}\`` : null
+          ].filter(n => n).join(" - "),
+          value: history[1]
+        }
+      }).filter(n => n);
+
+      if (latestStatus == null) {
+        return msg.edit({
+          embeds: [{
+            color: config.embedErrorColor,
+            description: "荷物が見つかりませんでした",
+            timestamp: new Date(),
+            title: "荷物追跡"
+          }]
+        });
+      }
+
+      if (!fromCache) {
+        resultCachies[trackCode] = {
+          "timestamp": nowTimeStamp,
+          "body": body
+        }
+      }
+
+      msg.edit({
+        embeds: [{
+          color: config.embedColor,
+          description: [
+            `## ${latestStatus}`,
+            isInternationalMail ? "  - 海外での履歴は現地時間" : null,
+          ].filter(n => n).join("\n"),
+          fields: embedFields,
+          timestamp: new Date(),
+          title: "荷物追跡"
+        }]
+      });
+    }
+
+    if (cache != undefined && nowTimeStamp - cache["timestamp"] < 300000) {
+      trackMessage(cache["body"], true);
+    } else {
+      fetch(`https://trackings.post.japanpost.jp/services/srv/search/?requestNo1=${trackCode}&search=追跡スタート`)
+      .then(res => res.text()).then(body => {
+        trackMessage(body, false);
+      }).catch(() => {
         msg.edit({
           embeds: [{
             color: config.embedErrorColor,
-            title: "追跡番号に誤りがあります",
-            timestamp: new Date()
+            description: "取得中にエラーが発生しました",
+            timestamp: new Date(),
+            title: "荷物追跡"
           }]
         });
-
-        return;
-      }
-
-      const japanPostDate = [];
-      const japanPostInfo = [];
-      const japanPostPlaceName = [];
-      const japanPostSet = [];
-
-      let japanPostAuthor = "日本郵便";
-      let japanPostType = $("td.w_480").text();
-
-      $("table.tableType01:nth-child(5) > tbody > tr > td:nth-child(2)").each((i, elem) => japanPostInfo[i] = $(elem).text());
-      $("table.tableType01:nth-child(5) > tbody > tr > td.w_120:nth-child(1)").each((i, elem) => japanPostDate[i] = $(elem).text());
-
-      const packageType = $(".ttl_line").text();
-
-      if (packageType.indexOf("ゆうパック") != -1) {
-        japanPostType = $("table.tableType01:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text();
-        for (let i = 0; i < japanPostInfo.length; i++) japanPostSet.push({name: `${japanPostDate[i].slice(5)}`, value: `${japanPostInfo[i]}`});
-      } else if (packageType.indexOf("国際") != -1) {
-        japanPostAuthor = "日本郵便 / 国際郵便";
-        japanPostType = `${$("table.tableType01:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text()}\n(海外での履歴は現地時間)`;
-        $("table.tableType01:nth-child(5) > tbody:nth-child(1) > tr > td:nth-child(5)").each((i, elem) => japanPostPlaceName[i] = $(elem).text());
-        for (let i = 0; i < japanPostInfo.length; i++) japanPostSet.push({
-          name: `${japanPostDate[i].slice(5)} (${japanPostPlaceName[i].replace(/\s+/g,"").replace(/[A-Z]/g,"") == "" ? japanPostPlaceName[i].replace(/\s+/g,"") : "JAPAN"})`,
-          value: `${japanPostInfo[i]}`
-        });
-      } else {
-        for (let i = 0; i < japanPostInfo.length; i++) japanPostSet.push({name: `${japanPostDate[i].slice(5)}`, value: `${japanPostInfo[i]}`});
-      }
-
-      msg.edit({
-        embeds: [{
-          author: {
-            name: japanPostAuthor
-          },
-          color: config.embedColor,
-          title: `荷物の状況: ${japanPostInfo[japanPostInfo.length - 1]}`,
-          description: `荷物種別: ${japanPostType}`,
-          fields: japanPostSet,
-          timestamp: new Date()
-        }]
       });
-    }).catch(() => {
-      msg.edit({
-        embeds: [{
-          color: config.embedErrorColor,
-          title: "追跡結果取得中にエラーが発生しました",
-          timestamp: new Date()
-        }]
-      });
-
-      return;
-    });
+    }
   });
 });
 
-client.login(process.env["DISCORDBOT_TOKEN"]);
+client.login(process.env["DISCORDBOT_TOKEN"].replace(/\s+/g, ""));

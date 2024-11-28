@@ -91,7 +91,7 @@ client.on("messageCreate", async message => {
           color: config.embedColor,
           description: [
             `## ${latestStatus}`,
-            isInternationalMail ? "  - 海外での履歴は現地時間" : null,
+            isInternationalMail ? "- 海外での履歴は現地時間" : null,
           ].filter(n => n).join("\n"),
           fields: embedFields,
           timestamp: new Date(),
